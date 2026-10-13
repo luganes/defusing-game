@@ -6,6 +6,10 @@
 // Cámbialo si algún día quieres salas separadas de otro grupo de amigos.
 export const NET_APP = 'luganes';
 export const NUM_ROOMS = 7;
+// TURN propio (opcional, gratis hasta 20 GB/mes en metered.ca): si las salas no conectan entre
+// redes distintas, crea una cuenta, una app y pega aquí su nombre y su API key.
+// Ejemplo: { app: 'mijuego', apiKey: 'abc123...' }. Vacío = solo los servidores gratuitos públicos.
+export const METERED_TURN = { app: '', apiKey: '' };
 
 // Modelos pesados (más de ~6 MB): pueden salir en la mesa si alguien los elige, pero no
 // entre el público (así la partida carga mucho antes por internet, sobre todo en el móvil).

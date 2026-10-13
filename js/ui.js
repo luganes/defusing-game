@@ -166,10 +166,19 @@ async function refreshRooms() {
   $('btn-rooms-refresh').disabled = true;
   const res = await probeRooms().catch(() => []);
   $('btn-rooms-refresh').disabled = false;
-  res.forEach(({ n, info }) => {
+  if (res.length && res.every(r => r.state === 'error')) {
+    list.innerHTML = '<p class="warn">No se pudo contactar con el servidor de salas (PeerJS). Revisa la conexión a internet y pulsa Actualizar.</p>';
+    return;
+  }
+  res.forEach(({ n, info, state }) => {
     const row = rows[n - 1], st = row.querySelector('.room-st'), btns = row.querySelector('.room-btns');
     btns.innerHTML = ''; st.className = 'room-st';
-    if (!info) {
+    if (state === 'noanswer') { // existe, pero no contestó: puede ser la red; se puede intentar entrar igual
+      st.innerHTML = '<span class="dot busy"></span>Ocupada · no responde (¿red?)';
+      const j = el('button', 'sm', 'Intentar entrar');
+      j.onclick = () => askCode(n, true);
+      btns.append(j);
+    } else if (!info) {
       st.innerHTML = '<span class="dot free"></span>Libre'; st.classList.add('muted');
       const a = el('button', 'sm', 'Crear pública'), b = el('button', 'sm', 'Crear privada');
       a.onclick = () => doCreate(n, true); b.onclick = () => doCreate(n, false);
@@ -185,8 +194,8 @@ async function refreshRooms() {
   });
 }
 const escapeHtml = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-function askCode(n) {
-  $('code-box').classList.remove('hidden'); $('code-room').textContent = `Sala ${n}`;
+function askCode(n, maybePublic = false) {
+  $('code-box').classList.remove('hidden'); $('code-room').textContent = maybePublic ? `Sala ${n} (si es pública, déjalo vacío)` : `Sala ${n}`;
   $('in-code').value = ''; $('in-code').focus();
   $('btn-code-ok').onclick = () => { $('code-box').classList.add('hidden'); doJoin(n, $('in-code').value.trim()); };
 }
@@ -197,9 +206,16 @@ async function doCreate(n, isPublic) {
   catch (why) { busy(''); notice(why === 'ocupada' ? `La sala ${n} acaba de ocuparse. Prueba otra.` : `No se pudo crear la sala (${why}).`); refreshRooms(); }
 }
 async function doJoin(n, code) {
-  busy(`Entrando en la sala ${n}…`);
+  busy(`Entrando en la sala ${n}… (desde otra red puede tardar unos segundos)`);
   try { await joinAsGuest(n, { name: myName(), preset: me.preset }, code); busy(''); show('lobby'); renderLobby(); }
-  catch (why) { busy(''); notice(why === 'libre' ? `La sala ${n} ya no existe.` : String(why)); refreshRooms(); }
+  catch (why) {
+    busy('');
+    const msg = { libre: `La sala ${n} ya no existe.`,
+      'sin-conexion': `La sala ${n} existe, pero vuestras redes no se dejan conectar. Prueba con otra red (por ejemplo, el wifi en vez de los datos) o que cree la sala otra persona.`,
+      'sin-respuesta': `La sala ${n} no responde. Comprueba que el anfitrión sigue con la página abierta.`,
+      'sin-red': 'No se pudo cargar el sistema de salas (hace falta internet).' }[why];
+    notice(msg || String(why)); refreshRooms();
+  }
 }
 function notice(msg) { $('notice-txt').textContent = msg; $('notice').classList.remove('hidden'); }
 
