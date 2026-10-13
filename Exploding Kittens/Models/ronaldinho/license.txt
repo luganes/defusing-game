@@ -1,0 +1,11 @@
+Model Information:
+* title:	Ronaldinho
+* source:	https://sketchfab.com/3d-models/ronaldinho-d99d876415784ca8be5a0de903a0bbcf
+* author:	SidewalkNZ (https://sketchfab.com/SidewalkNZ)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Ronaldinho" (https://sketchfab.com/3d-models/ronaldinho-d99d876415784ca8be5a0de903a0bbcf) by SidewalkNZ (https://sketchfab.com/SidewalkNZ) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

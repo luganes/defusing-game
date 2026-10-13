@@ -1,0 +1,11 @@
+Model Information:
+* title:	Dr. Heinz Doofenshmirtz (Phineas & Ferb)
+* source:	https://sketchfab.com/3d-models/dr-heinz-doofenshmirtz-phineas-ferb-9ba0e6c37547487baa4739656a6e3d98
+* author:	Guilherme Navarro (https://sketchfab.com/guinavarro.al)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Dr. Heinz Doofenshmirtz (Phineas & Ferb)" (https://sketchfab.com/3d-models/dr-heinz-doofenshmirtz-phineas-ferb-9ba0e6c37547487baa4739656a6e3d98) by Guilherme Navarro (https://sketchfab.com/guinavarro.al) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

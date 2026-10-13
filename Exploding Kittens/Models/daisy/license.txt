@@ -1,0 +1,11 @@
+Model Information:
+* title:	Daisy (Mario Kart 8 Deluxe)
+* source:	https://sketchfab.com/3d-models/daisy-mario-kart-8-deluxe-ecf3b70aaf66437bae63d9b1e5515df5
+* author:	Austin Zimmermann (https://sketchfab.com/AustinZimmermann)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Daisy (Mario Kart 8 Deluxe)" (https://sketchfab.com/3d-models/daisy-mario-kart-8-deluxe-ecf3b70aaf66437bae63d9b1e5515df5) by Austin Zimmermann (https://sketchfab.com/AustinZimmermann) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

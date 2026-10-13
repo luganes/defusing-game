@@ -1,0 +1,11 @@
+Model Information:
+* title:	Classic Knuckles
+* source:	https://sketchfab.com/3d-models/classic-knuckles-406a9e9651484b1699819333b3d468a5
+* author:	DetexkiModels (https://sketchfab.com/DetexkiModels)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Classic Knuckles" (https://sketchfab.com/3d-models/classic-knuckles-406a9e9651484b1699819333b3d468a5) by DetexkiModels (https://sketchfab.com/DetexkiModels) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

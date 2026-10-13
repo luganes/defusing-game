@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<link rel="icon" href="data:," />
+<title>Exploding Kittens 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+<!-- PeerJS: conexión directa entre navegadores para las salas online -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="app">
+  <canvas id="scene"></canvas>
+
+  <!-- ================= Menú principal ================= -->
+  <section id="menu" class="screen">
+    <div class="panel menu-panel">
+      <h1 class="brand">Exploding Kittens <span>3D</span></h1>
+      <label class="field">Tu nombre
+        <input id="in-name" maxlength="16" placeholder="Escribe tu nombre" autocomplete="nickname" />
+      </label>
+      <div class="field">Tu personaje
+        <div class="me-row"><div id="me-char"></div><button id="btn-pick" class="sm">Cambiar</button></div>
+      </div>
+      <div class="menu-actions">
+        <button id="btn-solo" class="primary big">Jugar contra la IA</button>
+        <button id="btn-online" class="big">Jugar online con amigos</button>
+      </div>
+      <p id="net-note" class="muted small"></p>
+    </div>
+  </section>
+
+  <!-- ================= Lista de salas ================= -->
+  <section id="rooms" class="screen hidden">
+    <div class="panel wide">
+      <div class="panel-head"><h2>Salas</h2>
+        <div class="row"><button id="btn-rooms-refresh" class="sm">Actualizar</button><button id="btn-rooms-back" class="sm">Volver</button></div>
+      </div>
+      <p class="muted small">Quien crea una sala hace de servidor: la partida va en su navegador y los demás se conectan a él. Si el anfitrión cierra la página, la sala se cierra.</p>
+      <div id="room-list"></div>
+    </div>
+    <div id="code-box" class="modal hidden">
+      <b>Código de la <span id="code-room">sala</span></b>
+      <input id="in-code" inputmode="numeric" maxlength="4" placeholder="1234" />
+      <div class="row"><button id="btn-code-ok" class="primary">Entrar</button><button id="btn-code-cancel">Cancelar</button></div>
+    </div>
+  </section>
+
+  <!-- ================= Sala de espera ================= -->
+  <section id="lobby" class="screen hidden">
+    <div class="panel">
+      <h2 id="lobby-title">Sala</h2>
+      <p id="lobby-sub" class="muted"></p>
+      <div id="lobby-seats"></div>
+      <label id="lobby-host" class="switch hidden"><input type="checkbox" id="lobby-public" /> <span>Sala pública (aparece en la lista para todos)</span></label>
+      <p id="lobby-wait" class="muted hidden">Esperando a que el anfitrión empiece la partida…</p>
+      <div class="row wrap end">
+        <button id="btn-lobby-char">Cambiar personaje</button>
+        <button id="btn-lobby-leave">Salir</button>
+        <button id="btn-lobby-start" class="primary">Empezar partida</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Elegir personaje ================= -->
+  <section id="picker" class="screen hidden">
+    <div class="panel wide picker-panel">
+      <div class="panel-head"><h2>Elige tu personaje</h2><div id="picked"></div></div>
+      <div id="roster"></div>
+      <div class="row end sticky-foot"><button id="btn-picker-cancel">Cancelar</button><button id="btn-picker-ok" class="primary">Elegir</button></div>
+    </div>
+  </section>
+
+  <!-- ================= HUD de la partida ================= -->
+  <section id="hud" class="screen hidden">
+    <header id="topbar">
+      <div id="room-tag"></div>
+      <div id="status"><div id="status-text"></div><div id="status-timer" class="hidden"><i></i></div><div id="mini-info"></div></div>
+      <div id="top-actions">
+        <button id="btn-music" class="icon-btn"></button>
+        <button id="btn-sfx" class="icon-btn"></button>
+        <button id="btn-cam" class="icon-btn" title="Cámara (C)"></button>
+        <button id="btn-help" class="icon-btn" title="Cómo se juega (H)"></button>
+        <button id="btn-menu" class="icon-btn" title="Menú (Esc)"></button>
+      </div>
+    </header>
+
+    <aside id="players"></aside>
+
+    <aside id="table-info">
+      <div class="ti-row">
+        <div class="ti-stat"><span id="ti-deck-ic"></span><b id="ti-deck">0</b><small>en el mazo</small></div>
+        <div class="ti-stat bomb"><span id="ti-bombs-ic"></span><b id="ti-bombs">0</b><small>bombas</small></div>
+      </div>
+      <div class="ti-risk"><div class="ti-risk-lbl"><span>Riesgo al robar</span><b id="ti-risk">0%</b></div><div class="ti-risk-track"><div id="ti-risk-bar"></div></div></div>
+      <div class="ti-discard-row"><small>Última carta jugada</small><div id="ti-discard"></div></div>
+      <button id="btn-log" class="log-btn"></button>
+      <div id="log-wrap"><div id="log"></div></div>
+    </aside>
+
+    <section id="bottom">
+      <div id="card-info"></div>
+      <div id="actions"></div>
+      <div id="hand"></div>
+    </section>
+
+    <div id="toast"></div>
+
+    <div id="future-popup" class="modal hidden">
+      <b>Las 3 cartas de arriba del mazo (solo las ves tú)</b>
+      <div id="future-cards" class="row"></div>
+      <button id="btn-future-ok" class="primary">Entendido</button>
+    </div>
+
+    <div id="bomb-popup" class="modal hidden">
+      <b>Has desactivado la bomba. ¿Dónde la escondes?</b>
+      <div class="row"><button id="bomb-minus" class="sm">Más arriba</button><input id="bomb-range" type="range" min="0" max="20" value="0" /><button id="bomb-plus" class="sm">Más abajo</button></div>
+      <div id="bomb-pos" class="muted"></div>
+      <button id="btn-bomb-ok" class="primary">Esconder bomba</button>
+    </div>
+
+    <div id="trio-menu" class="modal hidden">
+      <b id="trio-title">Trío</b>
+      <small class="muted">¿Qué carta pides?</small><div id="trio-wants" class="row wrap"></div>
+      <small class="muted">¿A quién?</small><div id="trio-targets" class="row wrap"></div>
+      <div class="row wrap">
+        <button id="btn-trio-ok" class="primary">Pedir con el trío</button>
+        <button id="btn-trio-pair">Usar solo 2 (pareja)</button>
+        <button id="btn-trio-cancel">Cancelar</button>
+      </div>
+    </div>
+
+    <div id="menu-pop" class="modal hidden">
+      <b>Menú</b>
+      <button id="mp-resume" class="primary">Seguir jugando</button>
+      <button id="mp-restart">Nueva partida</button>
+      <button id="mp-lobby">Volver a la sala de espera</button>
+      <button id="mp-exit">Salir al menú principal</button>
+    </div>
+
+    <div id="gameover" class="modal hidden">
+      <div id="go-who"></div>
+      <div class="row wrap">
+        <button id="btn-go-again" class="primary">Jugar otra</button>
+        <button id="btn-go-lobby">Sala de espera</button>
+        <button id="btn-go-view">Ver la fiesta</button>
+        <button id="btn-go-menu">Menú principal</button>
+      </div>
+      <p id="go-wait" class="muted small hidden">El anfitrión decide si se juega otra.</p>
+    </div>
+  </section>
+
+  <!-- ================= Ayuda ================= -->
+  <div id="help" class="overlay hidden">
+    <div class="panel help-panel">
+      <h2>Cómo se juega</h2>
+      <p><b>Objetivo:</b> no explotar. En el mazo hay bombas (Exploding Kittens): si robas una y no tienes <b>Desactivar</b>, quedas eliminado. Gana el último que quede.</p>
+      <p><b>Tu turno:</b> juega las cartas que quieras (o ninguna) y termina <b>robando</b> una carta del mazo.</p>
+      <ul>
+        <li><b>Ataque:</b> no robas y el siguiente juega 2 turnos.</li>
+        <li><b>Saltar:</b> terminas tu turno sin robar.</li>
+        <li><b>Favor:</b> un rival elige qué carta darte.</li>
+        <li><b>Barajar</b> el mazo y <b>Ver el futuro</b> (las 3 de arriba, solo tú).</li>
+        <li><b>Gatos:</b> 2 iguales roban una carta al azar a un rival; 3 iguales piden la carta que quieras.</li>
+        <li><b>Nope:</b> cancela la jugada de otro, en cualquier momento. Un Nope a un Nope la vuelve a activar.</li>
+        <li><b>Desactivar:</b> se usa sola al robar una bomba; luego eliges dónde esconderla.</li>
+      </ul>
+      <p><b>Objetivo de tus cartas:</b> toca a un rival (en su tarjeta o en la mesa 3D). La flecha roja indica quién ataca a quién.</p>
+      <p><b>El riesgo</b> (panel derecho) es la probabilidad de que la próxima carta sea una bomba.</p>
+      <p class="keys"><kbd>R</kbd> robar · <kbd>Espacio</kbd> jugar carta elegida · <kbd>N</kbd> Nope · <kbd>Enter</kbd> dejar pasar · <kbd>C</kbd> cámara · <kbd>Esc</kbd> menú</p>
+      <button id="btn-help-ok" class="primary">Entendido</button>
+    </div>
+  </div>
+
+  <div id="notice" class="overlay hidden"><div class="panel small-panel"><p id="notice-txt"></p><button id="btn-notice-ok" class="primary">Vale</button></div></div>
+  <div id="busy" class="overlay hidden"><div class="panel small-panel"><div class="spinner"></div><p id="busy-txt"></p></div></div>
+</div>
+<script type="module" src="main.js"></script>
+<script>
+// Red de seguridad: si algún módulo no carga (caché vieja), avisa en vez de quedarse en blanco.
+setTimeout(function () {
+  var r = document.getElementById('me-char');
+  if (r && !r.children.length) r.innerHTML = '<p style="color:#ff9090;font-weight:700">No se pudo cargar el juego. Recarga forzando (Ctrl+F5) o abre en una pestaña privada.</p>';
+}, 6000);
+</script>
+</body>
+</html>

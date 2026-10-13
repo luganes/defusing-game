@@ -1,0 +1,36 @@
+LOGOS DEL JUEGO
+================
+Los logos que usa el juego son los PNG con estos nombres (recortados, con fondo
+transparente y a 480 px como máximo). Para cambiar uno, sustituye el archivo
+manteniendo el nombre, o cambia la ruta en js/config.js
+(SERIES_LOGO para las series, `logo:` en cada persona real).
+Si falta un archivo, la tarjeta muestra iniciales y la etiqueta 3D solo el nombre.
+
+Series:
+  dragon-ball.png          Dragon Ball
+  jujutsu-kaisen.png       Jujutsu Kaisen
+  naruto.png               Naruto
+  super-mario.png          Super Mario
+  sonic.png                Sonic
+  zelda.png                The Legend of Zelda
+  gta-san-andreas.png      GTA San Andreas
+  marvel.png               Marvel
+  dc.png                   DC
+  invencible.png           Invencible
+  tortugas-ninja.png       Las Tortugas Ninja
+  bob-esponja.png          Bob Esponja
+  scooby-doo.png           Scooby-Doo
+  phineas-y-ferb.png       Phineas y Ferb
+  el-chavo.png             El Chavo del 8
+  avatar.png               Avatar
+  johnny-bravo.png         Johnny Bravo
+  shrek.png                Shrek
+  ben-10.png               Ben 10
+
+Personas reales con logo:
+  tesla.png                Elon Musk
+  nba.png                  LeBron James
+  meta.png                 Mark Zuckerberg
+
+El resto de personas reales llevan la bandera de su país, dibujada en js/icons.js (no hace falta archivo).
+Los archivos originales que descargaste se pueden borrar: el juego ya no los usa.

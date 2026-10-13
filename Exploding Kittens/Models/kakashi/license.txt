@@ -1,0 +1,11 @@
+Model Information:
+* title:	Kakashi Hatake
+* source:	https://sketchfab.com/3d-models/kakashi-hatake-e2f834a3fe6944a0a403a83d343b7395
+* author:	Cyrone™ (https://sketchfab.com/Cyrone)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Kakashi Hatake" (https://sketchfab.com/3d-models/kakashi-hatake-e2f834a3fe6944a0a403a83d343b7395) by Cyrone™ (https://sketchfab.com/Cyrone) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

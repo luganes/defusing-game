@@ -1,0 +1,11 @@
+Model Information:
+* title:	Naruto Sage
+* source:	https://sketchfab.com/3d-models/naruto-sage-161369399a0d4b6e9657023a1bcbfb31
+* author:	ninjatorent13 (https://sketchfab.com/ninjatorent13)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Naruto Sage" (https://sketchfab.com/3d-models/naruto-sage-161369399a0d4b6e9657023a1bcbfb31) by ninjatorent13 (https://sketchfab.com/ninjatorent13) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,74 @@
+EXPLODING KITTENS 3D - CÓMO SUBIRLO A VERCEL
+=============================================
+
+Ya está todo preparado en esta carpeta:
+  - .gitignore   -> decide qué se sube (solo lo que usa el juego: ~355 MB).
+                    NO se suben Mixamo, Stickers, los .fbx/.gltf originales que ya
+                    están convertidos a .glb, test-model.html, etc.
+  - vercel.json  -> hace que los navegadores guarden en caché los modelos y
+                    animaciones 1 día (la segunda vez carga muchísimo más rápido).
+
+El juego es una web estática: no hace falta compilar nada ni servidor propio.
+Las salas online van de navegador a navegador (PeerJS), así que Vercel solo
+tiene que servir los archivos.
+
+¿Por qué GitHub y no "arrastrar la carpeta" o la CLI de Vercel?
+  - Subiendo con la CLI en el plan gratis (Hobby) el límite es 100 MB, y el
+    juego ocupa más (los modelos 3D).
+  - La web de GitHub no deja subir archivos de más de 25 MB (maduro.glb pesa 28).
+  - Con GitHub Desktop + Vercel conectado a GitHub no hay ese problema, y cada
+    vez que cambies algo basta con darle a "Push" y Vercel lo actualiza solo.
+
+
+PASO 1 - Subir la carpeta a GitHub (una sola vez)
+-------------------------------------------------
+1. Instala GitHub Desktop (desktop.github.com) e inicia sesión con tu cuenta de GitHub.
+2. File > Add local repository... > elige la carpeta "Exploding Kittens".
+3. Te dirá que no es un repositorio: pulsa "create a repository".
+     - Name: exploding-kittens-3d (o el que quieras)
+     - Git ignore: None    (IMPORTANTE: ya hay uno nuestro, no lo cambies)
+     - License: None
+   y pulsa "Create repository".
+4. En la lista de la izquierda deberían salir unos 320 archivos: index.html, js/,
+   Models/... (solo .glb y los 7 personajes en gltf), Animations/, logos/, art/web/.
+   Si ves la carpeta Mixamo o Stickers, algo ha fallado: no sigas y avísame.
+5. Abajo a la izquierda escribe un mensaje (p. ej. "Primera versión") y pulsa
+   "Commit to main".
+6. Arriba pulsa "Publish repository". Puede ser privado (Vercel lo puede leer igual).
+   La primera subida tarda un rato (son ~355 MB).
+
+
+PASO 2 - Publicarlo en Vercel (una sola vez)
+--------------------------------------------
+1. Entra en vercel.com e inicia sesión CON GITHUB (así ve tus repositorios).
+2. Add New... > Project > busca "exploding-kittens-3d" > Import.
+3. En la configuración:
+     - Framework Preset: Other
+     - Root Directory: ./  (no lo toques)
+     - Build and Output Settings: déjalo todo vacío / por defecto (no hay build)
+4. Pulsa Deploy. En un minuto o dos te da una dirección tipo
+     https://exploding-kittens-3d.vercel.app
+   Esa es la que mandas a tus amigos.
+
+
+PASO 3 - Cuando cambies algo
+----------------------------
+Abre GitHub Desktop: verás los archivos cambiados. Escribe un mensaje,
+"Commit to main" y luego "Push origin". Vercel lo vuelve a publicar solo.
+
+(Si alguna vez añades un personaje nuevo en .gltf en vez de .glb, hay que
+añadir sus 3 líneas en .gitignore igual que las de goku. Los .glb nuevos
+se suben solos.)
+
+
+CÓMO JUGAR ONLINE CON AMIGOS
+----------------------------
+- Uno entra en la web, pone su nombre, pulsa "Jugar online con amigos" y crea
+  una sala (pública o privada). Ese navegador hace de "servidor": no lo
+  cierres mientras jugáis.
+- Los demás entran en la misma web > "Jugar online con amigos" > eligen la
+  sala (si es privada, con el código de 4 cifras que ve el anfitrión).
+- Si alguien se va a mitad de partida, la IA juega por él.
+- Las conexiones son de navegador a navegador. En casi todas las redes
+  domésticas y de móvil funciona; en algunas redes muy cerradas (empresa,
+  universidad) puede no conectar. Si pasa, probad desde otra red.

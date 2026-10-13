@@ -1,0 +1,11 @@
+Model Information:
+* title:	Amy Rose Sonic Dash
+* source:	https://sketchfab.com/3d-models/amy-rose-sonic-dash-73482855f7e9415e80ee79851278f9b9
+* author:	Guilherme Navarro (https://sketchfab.com/guinavarro.al)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Amy Rose Sonic Dash" (https://sketchfab.com/3d-models/amy-rose-sonic-dash-73482855f7e9415e80ee79851278f9b9) by Guilherme Navarro (https://sketchfab.com/guinavarro.al) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

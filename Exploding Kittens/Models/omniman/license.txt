@@ -1,0 +1,11 @@
+Model Information:
+* title:	Invincible VS Omniman
+* source:	https://sketchfab.com/3d-models/invincible-vs-omniman-b5a796086b4d48fda20edf42cb42d655
+* author:	th7915562 (https://sketchfab.com/th7915562)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Invincible VS Omniman" (https://sketchfab.com/3d-models/invincible-vs-omniman-b5a796086b4d48fda20edf42cb42d655) by th7915562 (https://sketchfab.com/th7915562) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Mark Zuckerberg Low Poly
+* source:	https://sketchfab.com/3d-models/mark-zuckerberg-low-poly-f7c84bf94ce44f4b881d0c21674f86c0
+* author:	Vadim Fedenko (https://sketchfab.com/vadimfedenko)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Mark Zuckerberg Low Poly" (https://sketchfab.com/3d-models/mark-zuckerberg-low-poly-f7c84bf94ce44f4b881d0c21674f86c0) by Vadim Fedenko (https://sketchfab.com/vadimfedenko) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

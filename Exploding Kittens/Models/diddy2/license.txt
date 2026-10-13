@@ -1,0 +1,11 @@
+Model Information:
+* title:	Diddy Kong From DK64
+* source:	https://sketchfab.com/3d-models/diddy-kong-from-dk64-bb01777e99634d4391459af2d0dddada
+* author:	og_iderick (https://sketchfab.com/og_iderick)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Diddy Kong From DK64" (https://sketchfab.com/3d-models/diddy-kong-from-dk64-bb01777e99634d4391459af2d0dddada) by og_iderick (https://sketchfab.com/og_iderick) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Leonardo TMNT 2012
+* source:	https://sketchfab.com/3d-models/leonardo-tmnt-2012-6702312bd48542808fe7d3cb79ddfe67
+* author:	Scorpion4241 (https://sketchfab.com/Scorpion4241)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Leonardo TMNT 2012" (https://sketchfab.com/3d-models/leonardo-tmnt-2012-6702312bd48542808fe7d3cb79ddfe67) by Scorpion4241 (https://sketchfab.com/Scorpion4241) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

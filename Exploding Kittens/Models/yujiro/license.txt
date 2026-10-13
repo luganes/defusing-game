@@ -1,0 +1,11 @@
+Model Information:
+* title:	Yujiro Hanma v1.0
+* source:	https://sketchfab.com/3d-models/yujiro-hanma-v10-6739950ee3e94a42ad1252bc4f5a049b
+* author:	Omega Slender (https://sketchfab.com/omega_slender)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Yujiro Hanma v1.0" (https://sketchfab.com/3d-models/yujiro-hanma-v10-6739950ee3e94a42ad1252bc4f5a049b) by Omega Slender (https://sketchfab.com/omega_slender) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

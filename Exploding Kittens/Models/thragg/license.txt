@@ -1,0 +1,11 @@
+Model Information:
+* title:	Thragg from invincible s4
+* source:	https://sketchfab.com/3d-models/thragg-from-invincible-s4-b404844894fb4f4d99b8c1648dc901a4
+* author:	Gojiram (https://sketchfab.com/geoffscool)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Thragg from invincible s4" (https://sketchfab.com/3d-models/thragg-from-invincible-s4-b404844894fb4f4d99b8c1648dc901a4) by Gojiram (https://sketchfab.com/geoffscool) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

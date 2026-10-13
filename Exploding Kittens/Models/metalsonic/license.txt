@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sonic Blitz - Metal Sonic
+* source:	https://sketchfab.com/3d-models/sonic-blitz-metal-sonic-2420ec2016c34ee78634942b87666757
+* author:	It's_Kurisu__ (https://sketchfab.com/NotSrAmadSus)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sonic Blitz - Metal Sonic" (https://sketchfab.com/3d-models/sonic-blitz-metal-sonic-2420ec2016c34ee78634942b87666757) by It's_Kurisu__ (https://sketchfab.com/NotSrAmadSus) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,8 @@
+Model Information:
+* title:	Joker
+* source:	https://sketchfab.com/3d-models/joker-97edc5c620ba40ebadde2314d92f12eb
+* author:	Tigerar1 (https://sketchfab.com/allanromanreyes)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

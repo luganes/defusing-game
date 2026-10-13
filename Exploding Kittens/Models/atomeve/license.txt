@@ -1,0 +1,11 @@
+Model Information:
+* title:	Invincible VS Atom Eve
+* source:	https://sketchfab.com/3d-models/invincible-vs-atom-eve-6f406c364e0d4644add5f032a323fe66
+* author:	th7915562 (https://sketchfab.com/th7915562)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Invincible VS Atom Eve" (https://sketchfab.com/3d-models/invincible-vs-atom-eve-6f406c364e0d4644add5f032a323fe66) by th7915562 (https://sketchfab.com/th7915562) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

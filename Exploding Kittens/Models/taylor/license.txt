@@ -1,0 +1,11 @@
+Model Information:
+* title:	Taylor Swift (Band Hero)
+* source:	https://sketchfab.com/3d-models/taylor-swift-band-hero-938084388d3e4d219f1e6ebbbce1926e
+* author:	LombaxLover2K (https://sketchfab.com/LombaxLover2K)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Taylor Swift (Band Hero)" (https://sketchfab.com/3d-models/taylor-swift-band-hero-938084388d3e4d219f1e6ebbbce1926e) by LombaxLover2K (https://sketchfab.com/LombaxLover2K) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

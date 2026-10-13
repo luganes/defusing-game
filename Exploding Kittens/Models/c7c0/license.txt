@@ -1,0 +1,11 @@
+Model Information:
+* title:	CJ
+* source:	https://sketchfab.com/3d-models/cj-c7c0abe69500425fb98b14b8a7398259
+* author:	lechitachan (https://sketchfab.com/lechitachan)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "CJ" (https://sketchfab.com/3d-models/cj-c7c0abe69500425fb98b14b8a7398259) by lechitachan (https://sketchfab.com/lechitachan) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

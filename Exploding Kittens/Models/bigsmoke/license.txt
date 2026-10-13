@@ -1,0 +1,11 @@
+Model Information:
+* title:	GTA SA Big Smoke Cutscene Model
+* source:	https://sketchfab.com/3d-models/gta-sa-big-smoke-cutscene-model-e147ca369648477e956bd81fbf641160
+* author:	Diddy_Blud_117 (https://sketchfab.com/marcosacevez57)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "GTA SA Big Smoke Cutscene Model" (https://sketchfab.com/3d-models/gta-sa-big-smoke-cutscene-model-e147ca369648477e956bd81fbf641160) by Diddy_Blud_117 (https://sketchfab.com/marcosacevez57) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

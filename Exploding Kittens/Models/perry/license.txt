@@ -1,0 +1,11 @@
+Model Information:
+* title:	Perry (Phineas and Ferb)
+* source:	https://sketchfab.com/3d-models/perry-phineas-and-ferb-13161441038b426d893a1af3fc3252b6
+* author:	Guilherme Navarro (https://sketchfab.com/guinavarro.al)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Perry (Phineas and Ferb)" (https://sketchfab.com/3d-models/perry-phineas-and-ferb-13161441038b426d893a1af3fc3252b6) by Guilherme Navarro (https://sketchfab.com/guinavarro.al) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

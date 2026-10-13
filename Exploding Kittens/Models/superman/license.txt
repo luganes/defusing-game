@@ -1,0 +1,11 @@
+Model Information:
+* title:	Superman (Justice League Heroes)
+* source:	https://sketchfab.com/3d-models/superman-justice-league-heroes-3f91d07546f6453db5c65332a2c490ee
+* author:	linkuei (https://sketchfab.com/linkuei)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Superman (Justice League Heroes)" (https://sketchfab.com/3d-models/superman-justice-league-heroes-3f91d07546f6453db5c65332a2c490ee) by linkuei (https://sketchfab.com/linkuei) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

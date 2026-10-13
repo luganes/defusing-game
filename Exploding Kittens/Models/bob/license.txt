@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sponge Bob Sponge On The Run - Sponge Bob
+* source:	https://sketchfab.com/3d-models/sponge-bob-sponge-on-the-run-sponge-bob-913a33a564e6466dac495aab410f53ac
+* author:	TinyKongFan2023 (https://sketchfab.com/TinyKongFan2023)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sponge Bob Sponge On The Run - Sponge Bob" (https://sketchfab.com/3d-models/sponge-bob-sponge-on-the-run-sponge-bob-913a33a564e6466dac495aab410f53ac) by TinyKongFan2023 (https://sketchfab.com/TinyKongFan2023) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

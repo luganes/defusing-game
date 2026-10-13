@@ -1,0 +1,69 @@
+# ============================================================
+#  Exploding Kittens 3D - que se sube a GitHub / Vercel
+#  Funciona como "lista blanca": se ignora TODO y luego se
+#  vuelve a incluir (!) solo lo que el juego usa de verdad.
+#  Asi no se suben los .fbx originales, Mixamo, Stickers, etc.
+# ============================================================
+
+# 1) Ignorar todo lo de la raiz...
+/*
+
+# 2) ...menos esto:
+!/.gitignore
+!/index.html
+!/style.css
+!/main.js
+!/vercel.json
+!/LEEME-VERCEL.txt
+
+# Codigo del juego (sin el script de pruebas)
+!/js/
+/js/check_config.mjs
+
+# Logos de las franquicias y animaciones de Mixamo (todas se usan)
+!/logos/
+!/Animations/
+
+# Canciones propias (p. ej. la de victoria de Baki)
+!/Audio/
+
+# Arte de las cartas: solo la version ligera para web (art/web)
+!/art/
+/art/*
+!/art/web/
+
+# Modelos 3D: de cada carpeta solo el .glb...
+!/Models/
+/Models/*
+!/Models/*/
+/Models/*/*
+!/Models/*/*.glb
+!/Models/*/license.txt
+# ...y los 7 personajes que van en formato .gltf (gltf + bin + texturas)
+!/Models/goku/scene.gltf
+!/Models/goku/scene.bin
+!/Models/goku/textures/
+!/Models/sakura/scene.gltf
+!/Models/sakura/scene.bin
+!/Models/sakura/textures/
+!/Models/ben10/scene.gltf
+!/Models/ben10/scene.bin
+!/Models/ben10/textures/
+!/Models/fred/scene.gltf
+!/Models/fred/scene.bin
+!/Models/fred/textures/
+!/Models/cr7/scene.gltf
+!/Models/cr7/scene.bin
+!/Models/cr7/textures/
+!/Models/zuck/scene.gltf
+!/Models/zuck/scene.bin
+!/Models/zuck/textures/
+!/Models/putin/scene.gltf
+!/Models/putin/scene.bin
+!/Models/putin/textures/
+
+# Basura del sistema, por si acaso
+Thumbs.db
+desktop.ini
+.DS_Store
+*.bak

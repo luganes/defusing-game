@@ -1,0 +1,11 @@
+Model Information:
+* title:	Aang (Sonic Racing: CrossWorlds)
+* source:	https://sketchfab.com/3d-models/aang-sonic-racing-crossworlds-77fd8a127fce41468f281a7ccafc46c0
+* author:	Guilherme Navarro (https://sketchfab.com/guinavarro.al)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Aang (Sonic Racing: CrossWorlds)" (https://sketchfab.com/3d-models/aang-sonic-racing-crossworlds-77fd8a127fce41468f281a7ccafc46c0) by Guilherme Navarro (https://sketchfab.com/guinavarro.al) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Elon Musk talking smack
+* source:	https://sketchfab.com/3d-models/elon-musk-talking-smack-4ce29264e4fb4d108ec7a1233dff27db
+* author:	EntropyNine (https://sketchfab.com/entropy9ine)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Elon Musk talking smack" (https://sketchfab.com/3d-models/elon-musk-talking-smack-4ce29264e4fb4d108ec7a1233dff27db) by EntropyNine (https://sketchfab.com/entropy9ine) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

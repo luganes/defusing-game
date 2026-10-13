@@ -1,0 +1,11 @@
+Model Information:
+* title:	JD Vance
+* source:	https://sketchfab.com/3d-models/jd-vance-9c0867d338a548a3a79a4e0e87942a37
+* author:	WTF Dave (https://sketchfab.com/wtfdave)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "JD Vance" (https://sketchfab.com/3d-models/jd-vance-9c0867d338a548a3a79a4e0e87942a37) by WTF Dave (https://sketchfab.com/wtfdave) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

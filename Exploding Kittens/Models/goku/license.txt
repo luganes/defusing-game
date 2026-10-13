@@ -1,0 +1,11 @@
+Model Information:
+* title:	son goku
+* source:	https://sketchfab.com/3d-models/son-goku-117fe1c12ffe44f698fe5d68f94a61ad
+* author:	ejohnson967 (https://sketchfab.com/ejohnson967)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "son goku" (https://sketchfab.com/3d-models/son-goku-117fe1c12ffe44f698fe5d68f94a61ad) by ejohnson967 (https://sketchfab.com/ejohnson967) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

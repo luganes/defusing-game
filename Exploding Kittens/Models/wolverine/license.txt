@@ -1,0 +1,8 @@
+Model Information:
+* title:	Wolverine
+* source:	https://sketchfab.com/3d-models/wolverine-f83223033b7849aab44ad99d15ac568d
+* author:	Tigerar1 (https://sketchfab.com/allanromanreyes)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Raphael TMNT 2012
+* source:	https://sketchfab.com/3d-models/raphael-tmnt-2012-dd0fb3208e1d43808b37c0f8d45a28db
+* author:	Scorpion4241 (https://sketchfab.com/andrejgluhov927)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Raphael TMNT 2012" (https://sketchfab.com/3d-models/raphael-tmnt-2012-dd0fb3208e1d43808b37c0f8d45a28db) by Scorpion4241 (https://sketchfab.com/andrejgluhov927) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,8 @@
+Model Information:
+* title:	Mario Party 4 - Yoshi
+* source:	https://sketchfab.com/3d-models/mario-party-4-yoshi-6f30dfe6195b4d3ab534b9286b7961c2
+* author:	taej11503 (https://sketchfab.com/taej11503)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

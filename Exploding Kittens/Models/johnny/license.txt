@@ -1,0 +1,11 @@
+Model Information:
+* title:	Johnny Bravo
+* source:	https://sketchfab.com/3d-models/johnny-bravo-0ea7327e91794b4bb85d36edc458bc00
+* author:	calvinwil5782 (https://sketchfab.com/calvinwil5782)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Johnny Bravo" (https://sketchfab.com/3d-models/johnny-bravo-0ea7327e91794b4bb85d36edc458bc00) by calvinwil5782 (https://sketchfab.com/calvinwil5782) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

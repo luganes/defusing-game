@@ -1,0 +1,11 @@
+Model Information:
+* title:	Baki Hanma v1.0
+* source:	https://sketchfab.com/3d-models/baki-hanma-v10-bb74f3a66c9b4b60a300d2b9a61a2737
+* author:	Omega Slender (https://sketchfab.com/omega_slender)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Baki Hanma v1.0" (https://sketchfab.com/3d-models/baki-hanma-v10-bb74f3a66c9b4b60a300d2b9a61a2737) by Omega Slender (https://sketchfab.com/omega_slender) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
