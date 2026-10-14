@@ -6,10 +6,13 @@
 // Cámbialo si algún día quieres salas separadas de otro grupo de amigos.
 export const NET_APP = 'luganes';
 export const NUM_ROOMS = 7;
-// TURN propio (opcional, gratis hasta 20 GB/mes en metered.ca): si las salas no conectan entre
-// redes distintas, crea una cuenta, una app y pega aquí su nombre y su API key.
-// Ejemplo: { app: 'mijuego', apiKey: 'abc123...' }. Vacío = solo los servidores gratuitos públicos.
-export const METERED_TURN = { app: '', apiKey: '' };
+// Repetidores MQTT públicos y gratuitos por los que viajan los mensajes del online.
+// Se usa el primero que responda (todos los jugadores prueban en el mismo orden).
+export const MQTT_BROKERS = [
+  'wss://broker.emqx.io:8084/mqtt',
+  'wss://broker.hivemq.com:8884/mqtt',
+  'wss://test.mosquitto.org:8081/mqtt',
+];
 
 // Modelos pesados (más de ~6 MB): pueden salir en la mesa si alguien los elige, pero no
 // entre el público (así la partida carga mucho antes por internet, sobre todo en el móvil).

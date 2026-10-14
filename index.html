@@ -9,8 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css" />
-<!-- PeerJS: conexión directa entre navegadores para las salas online -->
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script type="importmap">
 { "imports": {
   "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -46,11 +44,10 @@
       <div class="panel-head"><h2>Salas</h2>
         <div class="row"><button id="btn-rooms-refresh" class="sm">Actualizar</button><button id="btn-rooms-back" class="sm">Volver</button></div>
       </div>
-      <p class="muted small">Quien crea una sala hace de servidor: la partida va en su navegador y los demás se conectan a él. Si el anfitrión cierra la página, la sala se cierra.</p>
       <div id="room-list"></div>
     </div>
     <div id="code-box" class="modal hidden">
-      <b>Código de la <span id="code-room">sala</span></b>
+      <b>Código · <span id="code-room">sala</span></b>
       <input id="in-code" inputmode="numeric" maxlength="4" placeholder="1234" />
       <div class="row"><button id="btn-code-ok" class="primary">Entrar</button><button id="btn-code-cancel">Cancelar</button></div>
     </div>
@@ -62,8 +59,8 @@
       <h2 id="lobby-title">Sala</h2>
       <p id="lobby-sub" class="muted"></p>
       <div id="lobby-seats"></div>
-      <label id="lobby-host" class="switch hidden"><input type="checkbox" id="lobby-public" /> <span>Sala pública (aparece en la lista para todos)</span></label>
-      <p id="lobby-wait" class="muted hidden">Esperando a que el anfitrión empiece la partida…</p>
+      <label id="lobby-host" class="switch hidden"><input type="checkbox" id="lobby-public" /> <span>Pública</span></label>
+      <p id="lobby-wait" class="muted hidden">Esperando al anfitrión…</p>
       <div class="row wrap end">
         <button id="btn-lobby-char">Cambiar personaje</button>
         <button id="btn-lobby-leave">Salir</button>

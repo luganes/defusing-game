@@ -96,7 +96,7 @@ export async function createRoom(n, me, isPublic) {
   Object.assign(Game.RULES, { nopeWait: 10000, favorWait: 25000, bombWait: 25000, turnWait: 60000 });
   Game.setEmitter(hostEmit);
   try {
-    roomHandle = await hostRoom(n, onIncoming);
+    roomHandle = await hostRoom(n, onIncoming, () => (S.lobby ? lobbyInfo() : {}));
   } catch (why) { S.mode = null; S.lobby = null; throw why; }
   ui.onLobby();
 }
@@ -110,6 +110,7 @@ function lobbyInfo() {
 function broadcastLobby() {
   const L = S.lobby;
   for (const [seat, c] of clients) c.conn.send({ k: 'lobby', lobby: { ...L, code: '' }, seat });
+  roomHandle?.update?.(); // la lista de salas ve el cambio
   ui.onLobby();
 }
 
@@ -119,10 +120,10 @@ function onIncoming(conn) {
   const L = S.lobby;
   const reject = reason => { conn.send({ k: 'reject', reason }); setTimeout(() => conn.close(), 400); };
   if (!L) return reject('La sala ya no existe.');
-  if (L.started) return reject('La partida ya empezó. Espera a que termine.');
+  if (L.started) return reject('La partida ya empezó.');
   if (!L.isPublic && String(m.code || '') !== L.code) return reject('Código incorrecto.');
   const seat = [1, 2, 3].find(i => !L.seats[i]);
-  if (!seat) return reject('La sala está llena (4 de 4).');
+  if (!seat) return reject('Sala llena.');
   L.seats[seat] = { name: String(m.name || 'Jugador').slice(0, 16), preset: m.preset };
   clients.set(seat, { conn, queue: [] });
   conn.on('data', d => onClientData(seat, d));
@@ -185,7 +186,7 @@ export async function joinAsGuest(n, me, code) {
   const conn = await joinRoom(n, { name: me.name, preset: me.preset, code });
   return new Promise((resolve, reject) => {
     let ok = false;
-    const t = setTimeout(() => { if (!ok) { reject('El anfitrión no responde.'); conn.close(); } }, 8000);
+    const t = setTimeout(() => { if (!ok) { reject('No responde.'); conn.close(); } }, 8000);
     conn.on('data', d => {
       if (d?.k === 'reject') { clearTimeout(t); reject(d.reason); conn.close(); return; }
       if (d?.k === 'welcome') {
@@ -206,9 +207,9 @@ export async function joinAsGuest(n, me, code) {
       }
     });
     conn.on('close', () => {
-      if (S.mode !== 'client' || hostConn !== conn) { if (!ok) { clearTimeout(t); reject('Se cortó la conexión.'); } return; }
+      if (S.mode !== 'client' || hostConn !== conn) { if (!ok) { clearTimeout(t); reject('Sin conexión.'); } return; }
       hostConn = null; S.mode = null; S.lobby = null;
-      ui.onClosed('El anfitrión cerró la sala o se perdió la conexión.');
+      ui.onClosed('La sala se cerró.');
     });
   });
 }
