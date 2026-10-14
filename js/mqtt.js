@@ -14,7 +14,7 @@ const str = s => { const b = te.encode(s); return [b.length >> 8, b.length & 255
 const bin = b => [b.length >> 8, b.length & 255, ...b];
 const packet = (first, body) => new Uint8Array([first, ...varint(body.length), ...body]);
 
-export function mqttConnect(url, { clientId, will = null, keepalive = 20, timeout = 6000 } = {}) {
+export function mqttConnect(url, { clientId, will = null, username, password, keepalive = 20, timeout = 6000 } = {}) {
   return new Promise((resolve, reject) => {
     let ws;
     try { ws = new WebSocket(url, 'mqtt'); } catch (e) { reject(e); return; }
@@ -38,6 +38,8 @@ export function mqttConnect(url, { clientId, will = null, keepalive = 20, timeou
         flags |= 0x04 | (will.retain ? 0x20 : 0);
         payload.push(...str(will.topic), ...bin(te.encode(will.payload || '')));
       }
+      if (username) { flags |= 0x80; payload.push(...str(username)); }
+      if (username && password) { flags |= 0x40; payload.push(...bin(te.encode(password))); }
       send(packet(0x10, [...str('MQTT'), 4, flags, keepalive >> 8, keepalive & 255, ...payload]));
     };
     ws.onerror = () => fail('error');

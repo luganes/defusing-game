@@ -23,18 +23,27 @@ const newId = () => Math.random().toString(36).slice(2, 10) + Date.now().toStrin
 export const netAvailable = () => LOCAL || typeof WebSocket === 'function';
 export const netMode = () => (LOCAL ? 'local' : 'mqtt');
 
-// Conecta al primer repetidor que responda (todos prueban en el mismo orden, así coinciden).
-let goodBroker = null;
-async function connectBroker(opts) {
-  const list = goodBroker ? [goodBroker, ...MQTT_BROKERS.filter(b => b !== goodBroker)] : MQTT_BROKERS;
-  let last = 'sin-red';
-  for (const url of list) {
-    try {
-      const c = await mqttConnect(url, { clientId: 'ek3d-' + newId(), ...opts });
-      goodBroker = url; return c;
-    } catch (e) { last = 'sin-red'; console.warn('[net] repetidor', url, e); }
-  }
-  throw last;
+// Se conecta a TODOS los repetidores a la vez y se queda con los que respondan.
+// Así da igual que la red de alguien bloquee uno: con que coincidáis en uno, funciona.
+const brokerUrl = b => (typeof b === 'string' ? b : b.url);
+function connectAll(opts) {
+  return new Promise((resolve, reject) => {
+    const ok = []; let left = MQTT_BROKERS.length, done = false, grace = null;
+    const finish = () => {
+      if (done) return; done = true; clearTimeout(grace);
+      ok.length ? resolve([...ok]) : reject('sin-red');
+    };
+    MQTT_BROKERS.forEach(b => {
+      mqttConnect(brokerUrl(b), { clientId: 'ek3d-' + newId(), username: b.username, password: b.password, ...opts })
+        .then(c => {
+          if (done) { c.end(); return; } // llegó tarde: no hace falta
+          c.broker = brokerUrl(b); ok.push(c);
+          grace ||= setTimeout(finish, 2500); // tras el primero, damos un poco de margen al resto
+        })
+        .catch(e => console.warn('[net] repetidor', brokerUrl(b), e))
+        .finally(() => { if (--left === 0) finish(); });
+    });
+  });
 }
 const parse = s => { try { return JSON.parse(s); } catch { return null; } };
 
@@ -91,63 +100,66 @@ export async function hostRoom(n, onConn, getInfo = () => ({})) {
     });
   }
   const myId = newId();
-  const mq = await connectBroker({ will: { topic: `${T(n)}/info`, payload: '', retain: true } });
+  const mqs = await connectAll({ will: { topic: `${T(n)}/info`, payload: '', retain: true } });
   // ¿Hay ya alguien en esta sala? (el mensaje retenido llega nada más suscribirse)
   let other = null;
-  const onInfo = (topic, msg) => {
+  mqs.forEach(mq => mq.on('message', (topic, msg) => {
     if (topic !== `${T(n)}/info`) return;
     const d = parse(msg);
     if (d?.hostId && d.hostId !== myId) other = d;
-  };
-  mq.on('message', onInfo);
-  await mq.subscribe(`${T(n)}/info`);
+  }));
+  await Promise.all(mqs.map(mq => mq.subscribe(`${T(n)}/info`)));
   await new Promise(r => setTimeout(r, 1200));
-  if (other) { mq.end(); throw 'ocupada'; }
-  const publishInfo = () => mq.publish(`${T(n)}/info`, JSON.stringify({ hostId: myId, ts: Date.now(), info: getInfo() }), { retain: true });
+  if (other) { mqs.forEach(mq => mq.end()); throw 'ocupada'; }
+  const publishInfo = () => {
+    const msg = JSON.stringify({ hostId: myId, ts: Date.now(), info: getInfo() });
+    mqs.forEach(mq => mq.publish(`${T(n)}/info`, msg, { retain: true }));
+  };
   publishInfo();
   await new Promise(r => setTimeout(r, 800)); // si dos crean la misma sala a la vez, gana el id menor
-  if (other && other.hostId < myId) { mq.end(); throw 'ocupada'; }
+  if (other && other.hostId < myId) { mqs.forEach(mq => mq.end()); throw 'ocupada'; }
   if (other) publishInfo(); // ganamos: que el estado retenido sea el nuestro
 
-  const guests = new Map(); // id -> { fire(ev, data), last }
-  const toGuest = (id, m) => mq.publish(`${T(n)}/c/${id}`, JSON.stringify(m));
-  mq.on('message', (topic, msg) => {
+  const guests = new Map(); // id -> { h, fire, last, mq }
+  const toGuest = (id, m) => guests.get(id)?.mq.publish(`${T(n)}/c/${id}`, JSON.stringify(m));
+  mqs.forEach(mq => mq.on('message', (topic, msg) => {
     if (topic !== `${T(n)}/host`) return;
     const m = parse(msg); if (!m?.from) return;
     const g = guests.get(m.from);
     if (m.t === 'hello' && !g) {
       const h = { data: [], close: [] };
       let closed = false;
+      const id = m.from;
       const conn = {
         meta: m.meta || {},
-        send: d => { if (!closed) toGuest(m.from, { t: 'data', d }); },
-        close: () => { if (closed) return; toGuest(m.from, { t: 'bye' }); fire(); },
+        send: d => { if (!closed) toGuest(id, { t: 'data', d }); },
+        close: () => { if (closed) return; toGuest(id, { t: 'bye' }); fire(); },
         on: (ev, fn) => h[ev].push(fn),
       };
-      const fire = () => { if (closed) return; closed = true; guests.delete(m.from); h.close.forEach(f => f()); };
-      guests.set(m.from, { h, fire, last: Date.now() });
-      toGuest(m.from, { t: 'accept' });
+      const fire = () => { if (closed) return; closed = true; guests.delete(id); h.close.forEach(f => f()); };
+      guests.set(id, { h, fire, last: Date.now(), mq }); // se le contesta por el mismo repetidor
+      toGuest(id, { t: 'accept' });
       onConn(conn);
       return;
     }
-    if (!g) return;
+    if (!g || g.mq !== mq) return;
     g.last = Date.now();
     if (m.t === 'data') g.h.data.forEach(f => f(m.d));
     if (m.t === 'bye') g.fire();
-  });
-  await mq.subscribe(`${T(n)}/host`);
+  }));
+  await Promise.all(mqs.map(mq => mq.subscribe(`${T(n)}/host`)));
   const beat = setInterval(() => { // latido: la sala sigue viva; y fuera los invitados mudos
     publishInfo();
     for (const [id, g] of guests) { toGuest(id, { t: 'ping' }); if (Date.now() - g.last > 45000) g.fire(); }
   }, 15000);
-  mq.on('close', () => { clearInterval(beat); for (const g of [...guests.values()]) g.fire(); });
+  mqs.forEach(mq => mq.on('close', () => { for (const g of [...guests.values()]) if (g.mq === mq) g.fire(); }));
   return {
     update: publishInfo,
     close: () => {
       clearInterval(beat);
       for (const [id, g] of [...guests]) { toGuest(id, { t: 'bye' }); g.fire(); }
-      mq.publish(`${T(n)}/info`, '', { retain: true }); // borra la sala de la lista
-      setTimeout(() => mq.end(), 200);
+      mqs.forEach(mq => mq.publish(`${T(n)}/info`, '', { retain: true })); // borra la sala de la lista
+      setTimeout(() => mqs.forEach(mq => mq.end()), 200);
     },
   };
 }
@@ -169,16 +181,27 @@ export async function joinRoom(n, meta, timeout = 10000) {
     });
   }
   const myId = newId();
-  const mq = await connectBroker({ will: { topic: `${T(n)}/host`, payload: JSON.stringify({ t: 'bye', from: myId }) } });
+  const all = await connectAll({ will: { topic: `${T(n)}/host`, payload: JSON.stringify({ t: 'bye', from: myId }) } });
+  // ¿En qué repetidor está la sala? Nos quedamos con el primero que la tenga.
+  const mq = await new Promise(res => {
+    let done = false;
+    const pick = c => { if (done) return; done = true; clearTimeout(t); res(c); };
+    const t = setTimeout(() => pick(null), 4000);
+    all.forEach(c => {
+      c.on('message', (topic, msg) => { if (topic === `${T(n)}/info` && parse(msg)?.hostId) pick(c); });
+      c.subscribe(`${T(n)}/info`);
+    });
+  });
+  all.forEach(c => { if (c !== mq) c.end(); });
+  if (!mq) throw 'libre';
   const h = { data: [], close: [] };
-  let accepted = false, closed = false, last = Date.now(), roomSeen = false;
+  let accepted = false, closed = false, last = Date.now();
   const fire = () => { if (closed) return; closed = true; clearInterval(beat); h.close.forEach(f => f()); mq.end(); };
   const toHost = m => mq.publish(`${T(n)}/host`, JSON.stringify({ ...m, from: myId }));
   let onAccept = null;
   mq.on('message', (topic, msg, retained) => {
     if (topic === `${T(n)}/info`) { // la sala desaparece (el anfitrión se fue): cerramos
-      if (msg) roomSeen = true;
-      else if (accepted && !retained) fire();
+      if (!msg && accepted && !retained) fire();
       return;
     }
     if (topic !== `${T(n)}/c/${myId}`) return;
@@ -195,9 +218,8 @@ export async function joinRoom(n, meta, timeout = 10000) {
   }, 10000);
   mq.on('close', fire);
   await mq.subscribe(`${T(n)}/c/${myId}`);
-  await mq.subscribe(`${T(n)}/info`);
   return new Promise((resolve, reject) => {
-    const t = setTimeout(() => { clearInterval(beat); closed = true; mq.end(); reject(roomSeen ? 'sin-respuesta' : 'libre'); }, timeout);
+    const t = setTimeout(() => { clearInterval(beat); closed = true; mq.end(); reject('sin-respuesta'); }, timeout);
     onAccept = () => {
       clearTimeout(t);
       resolve({
@@ -222,16 +244,16 @@ export async function probeRooms() {
     })).catch(() => ({ n, state: 'free', info: null }));
     return Promise.all(range.map(ask));
   }
-  let mq;
-  try { mq = await connectBroker({}); } catch { return range.map(n => ({ n, state: 'error', info: null })); }
-  const found = {};
-  mq.on('message', (topic, msg) => {
+  let all;
+  try { all = await connectAll({}); } catch { return range.map(n => ({ n, state: 'error', info: null })); }
+  const found = {}; // sala -> info (de cualquier repetidor)
+  all.forEach(mq => mq.on('message', (topic, msg) => {
     const m = /\/sala\/(\d+)\/info$/.exec(topic); if (!m) return;
     const d = msg ? parse(msg) : null;
-    if (d?.info && Date.now() - (d.ts || 0) < 10 * 60 * 1000) found[m[1]] = d.info; else delete found[m[1]];
-  });
-  await mq.subscribe(`ek3d/${NET_APP}/v2/sala/+/info`);
+    if (d?.info && Date.now() - (d.ts || 0) < 10 * 60 * 1000) found[m[1]] = d.info;
+  }));
+  await Promise.all(all.map(mq => mq.subscribe(`ek3d/${NET_APP}/v2/sala/+/info`)));
   await new Promise(r => setTimeout(r, 1500)); // los retenidos llegan enseguida
-  mq.end();
+  all.forEach(mq => mq.end());
   return range.map(n => found[n] ? { n, state: 'room', info: found[n] } : { n, state: 'free', info: null });
 }

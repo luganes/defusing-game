@@ -7,11 +7,12 @@
 export const NET_APP = 'luganes';
 export const NUM_ROOMS = 7;
 // Repetidores MQTT públicos y gratuitos por los que viajan los mensajes del online.
-// Se usa el primero que responda (todos los jugadores prueban en el mismo orden).
+// El juego se conecta a todos a la vez: basta con que anfitrión e invitado coincidan en uno.
 export const MQTT_BROKERS = [
   'wss://broker.emqx.io:8084/mqtt',
   'wss://broker.hivemq.com:8884/mqtt',
   'wss://test.mosquitto.org:8081/mqtt',
+  { url: 'wss://public.cloud.shiftr.io', username: 'public', password: 'public' }, // puerto 443: pasa casi cualquier red
 ];
 
 // Modelos pesados (más de ~6 MB): pueden salir en la mesa si alguien los elige, pero no
