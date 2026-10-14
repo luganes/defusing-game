@@ -23,9 +23,54 @@ const newId = () => Math.random().toString(36).slice(2, 10) + Date.now().toStrin
 export const netAvailable = () => LOCAL || typeof WebSocket === 'function';
 export const netMode = () => (LOCAL ? 'local' : 'mqtt');
 
+// ---------- Enlace con un repetidor que se reconecta solo ----------
+// Si la conexión se cae (wifi que parpadea, móvil que bloquea la pantalla, el repetidor
+// la corta...), vuelve a conectar sola, se suscribe otra vez y envía lo que quedó pendiente.
+const brokerUrl = b => (typeof b === 'string' ? b : b.url);
+function makeLink(b, client) {
+  const url = brokerUrl(b);
+  const h = { message: [], up: [], down: [] };
+  const subs = new Set(), queue = [];
+  let mq = client, closed = false, retry = null, tries = 0, will = client._will;
+  const wire = c => {
+    c.on('message', (t, m, r) => h.message.forEach(f => f(t, m, r)));
+    c.on('close', () => { if (mq !== c || closed) return; mq = null; h.down.forEach(f => f()); reconnect(); });
+  };
+  const reconnect = () => {
+    if (closed || retry) return;
+    const wait = Math.min(1000 * 2 ** tries, 8000); tries++;
+    retry = setTimeout(async () => {
+      retry = null;
+      try {
+        const c = await mqttConnect(url, { clientId: 'ek3d-' + newId(), username: b.username, password: b.password, will });
+        if (closed) { c.end(); return; }
+        mq = c; tries = 0; wire(c);
+        await Promise.all([...subs].map(f => c.subscribe(f)));
+        while (queue.length && mq === c) { const [t, m, o] = queue.shift(); c.publish(t, m, o); }
+        h.up.forEach(f => f());
+      } catch { reconnect(); }
+    }, wait);
+  };
+  wire(client);
+  // al volver a la pestaña (móvil), comprobar enseguida
+  const vis = () => { if (document.visibilityState === 'visible' && !mq && !closed) { clearTimeout(retry); retry = null; tries = 0; reconnect(); } };
+  document.addEventListener('visibilitychange', vis);
+  return {
+    broker: url,
+    get up() { return !!mq?.open; },
+    on(ev, fn) { h[ev].push(fn); },
+    setWill(w) { will = w; },
+    subscribe(f) { subs.add(f); return mq ? mq.subscribe(f) : Promise.resolve(); },
+    publish(t, m, o = {}) {
+      if (mq?.open) mq.publish(t, m, o);
+      else if (!o.retain) { queue.push([t, m, o]); if (queue.length > 300) queue.shift(); }
+    },
+    end() { closed = true; clearTimeout(retry); document.removeEventListener('visibilitychange', vis); mq?.end(); mq = null; },
+  };
+}
+
 // Se conecta a TODOS los repetidores a la vez y se queda con los que respondan.
 // Así da igual que la red de alguien bloquee uno: con que coincidáis en uno, funciona.
-const brokerUrl = b => (typeof b === 'string' ? b : b.url);
 function connectAll(opts) {
   return new Promise((resolve, reject) => {
     const ok = []; let left = MQTT_BROKERS.length, done = false, grace = null;
@@ -37,7 +82,7 @@ function connectAll(opts) {
       mqttConnect(brokerUrl(b), { clientId: 'ek3d-' + newId(), username: b.username, password: b.password, ...opts })
         .then(c => {
           if (done) { c.end(); return; } // llegó tarde: no hace falta
-          c.broker = brokerUrl(b); ok.push(c);
+          c._will = opts.will; ok.push(makeLink(b, c));
           grace ||= setTimeout(finish, 2500); // tras el primero, damos un poco de margen al resto
         })
         .catch(e => console.warn('[net] repetidor', brokerUrl(b), e))
@@ -55,7 +100,7 @@ if (bc) bc.onmessage = e => localHandlers.forEach(f => f(e.data));
 const bcSend = m => bc.postMessage({ ...m, from: m.from || myLocalId });
 
 function localConn(remote, meta, linkId) {
-  const h = { data: [], close: [] };
+  const h = { data: [], close: [], resync: [] };
   let closed = false;
   const onMsg = m => {
     if (m.link !== linkId || m.from !== remote) return;
@@ -120,14 +165,20 @@ export async function hostRoom(n, onConn, getInfo = () => ({})) {
   if (other && other.hostId < myId) { mqs.forEach(mq => mq.end()); throw 'ocupada'; }
   if (other) publishInfo(); // ganamos: que el estado retenido sea el nuestro
 
-  const guests = new Map(); // id -> { h, fire, last, mq }
+  const guests = new Map(); // id -> { h, fire, last, mq, lostAt }
   const toGuest = (id, m) => guests.get(id)?.mq.publish(`${T(n)}/c/${id}`, JSON.stringify(m));
   mqs.forEach(mq => mq.on('message', (topic, msg) => {
     if (topic !== `${T(n)}/host`) return;
     const m = parse(msg); if (!m?.from) return;
     const g = guests.get(m.from);
-    if (m.t === 'hello' && !g) {
-      const h = { data: [], close: [] };
+    if (m.t === 'hello' && g) { // vuelve tras un corte: mismo asiento, le reenviamos todo
+      g.mq = mq; g.last = Date.now(); g.lostAt = 0;
+      toGuest(m.from, { t: 'accept' });
+      g.h.resync.forEach(f => f());
+      return;
+    }
+    if (m.t === 'hello' && !m.resume) {
+      const h = { data: [], close: [], resync: [] };
       let closed = false;
       const id = m.from;
       const conn = {
@@ -137,29 +188,36 @@ export async function hostRoom(n, onConn, getInfo = () => ({})) {
         on: (ev, fn) => h[ev].push(fn),
       };
       const fire = () => { if (closed) return; closed = true; guests.delete(id); h.close.forEach(f => f()); };
-      guests.set(id, { h, fire, last: Date.now(), mq }); // se le contesta por el mismo repetidor
+      guests.set(id, { h, fire, last: Date.now(), mq, lostAt: 0 }); // se le contesta por el mismo repetidor
       toGuest(id, { t: 'accept' });
       onConn(conn);
       return;
     }
-    if (!g || g.mq !== mq) return;
-    g.last = Date.now();
+    if (m.t === 'hello' && m.resume) { toGuest2(mq, m.from, { t: 'bye' }); return; } // ya no estaba: que vuelva a entrar
+    if (!g) return;
+    g.last = Date.now(); g.lostAt = 0;
     if (m.t === 'data') g.h.data.forEach(f => f(m.d));
-    if (m.t === 'bye') g.fire();
+    if (m.t === 'bye') g.fire();               // se fue a propósito
+    if (m.t === 'gone') g.lostAt = Date.now(); // se le cortó: le esperamos un rato
   }));
+  const toGuest2 = (mq, id, m) => mq.publish(`${T(n)}/c/${id}`, JSON.stringify(m));
   await Promise.all(mqs.map(mq => mq.subscribe(`${T(n)}/host`)));
-  const beat = setInterval(() => { // latido: la sala sigue viva; y fuera los invitados mudos
+  mqs.forEach(mq => mq.on('up', publishInfo)); // tras reconectar, la sala vuelve a la lista
+  const beat = setInterval(() => { // latido: la sala sigue viva; y fuera quien lleve mucho sin dar señales
     publishInfo();
-    for (const [id, g] of guests) { toGuest(id, { t: 'ping' }); if (Date.now() - g.last > 45000) g.fire(); }
+    const now = Date.now();
+    for (const [id, g] of guests) {
+      toGuest(id, { t: 'ping' });
+      if (now - g.last > 120000 || (g.lostAt && now - g.lostAt > 90000)) g.fire();
+    }
   }, 15000);
-  mqs.forEach(mq => mq.on('close', () => { for (const g of [...guests.values()]) if (g.mq === mq) g.fire(); }));
   return {
     update: publishInfo,
     close: () => {
       clearInterval(beat);
       for (const [id, g] of [...guests]) { toGuest(id, { t: 'bye' }); g.fire(); }
       mqs.forEach(mq => mq.publish(`${T(n)}/info`, '', { retain: true })); // borra la sala de la lista
-      setTimeout(() => mqs.forEach(mq => mq.end()), 200);
+      setTimeout(() => mqs.forEach(mq => mq.end()), 300);
     },
   };
 }
@@ -181,42 +239,63 @@ export async function joinRoom(n, meta, timeout = 10000) {
     });
   }
   const myId = newId();
-  const all = await connectAll({ will: { topic: `${T(n)}/host`, payload: JSON.stringify({ t: 'bye', from: myId }) } });
+  const will = { topic: `${T(n)}/host`, payload: JSON.stringify({ t: 'gone', from: myId }) };
   // ¿En qué repetidor está la sala? Nos quedamos con el primero que la tenga.
-  const mq = await new Promise(res => {
-    let done = false;
-    const pick = c => { if (done) return; done = true; clearTimeout(t); res(c); };
-    const t = setTimeout(() => pick(null), 4000);
-    all.forEach(c => {
-      c.on('message', (topic, msg) => { if (topic === `${T(n)}/info` && parse(msg)?.hostId) pick(c); });
-      c.subscribe(`${T(n)}/info`);
+  const findRoom = async () => {
+    const all = await connectAll({ will });
+    const found = await new Promise(res => {
+      let done = false;
+      const pick = c => { if (done) return; done = true; clearTimeout(t); res(c); };
+      const t = setTimeout(() => pick(null), 4000);
+      all.forEach(c => {
+        c.on('message', (topic, msg) => { if (topic === `${T(n)}/info` && parse(msg)?.hostId) pick(c); });
+        c.subscribe(`${T(n)}/info`);
+      });
     });
-  });
-  all.forEach(c => { if (c !== mq) c.end(); });
+    all.forEach(c => { if (c !== found) c.end(); });
+    return found;
+  };
+  let mq = await findRoom();
   if (!mq) throw 'libre';
   const h = { data: [], close: [] };
-  let accepted = false, closed = false, last = Date.now();
+  let accepted = false, closed = false, last = Date.now(), hostLostAt = 0, switching = false;
   const fire = () => { if (closed) return; closed = true; clearInterval(beat); h.close.forEach(f => f()); mq.end(); };
   const toHost = m => mq.publish(`${T(n)}/host`, JSON.stringify({ ...m, from: myId }));
   let onAccept = null;
-  mq.on('message', (topic, msg, retained) => {
-    if (topic === `${T(n)}/info`) { // la sala desaparece (el anfitrión se fue): cerramos
-      if (!msg && accepted && !retained) fire();
-      return;
-    }
-    if (topic !== `${T(n)}/c/${myId}`) return;
-    const m = parse(msg); if (!m) return;
-    last = Date.now();
-    if (m.t === 'accept' && !accepted) { accepted = true; onAccept?.(); }
-    else if (m.t === 'data') h.data.forEach(f => f(m.d));
-    else if (m.t === 'bye') fire();
-  });
-  const beat = setInterval(() => {
-    if (!accepted) return;
+  const listen = link => {
+    link.on('message', (topic, msg) => {
+      if (link !== mq) return;
+      if (topic === `${T(n)}/info`) { // sin info = el anfitrión se cortó; le damos un rato para volver
+        if (!msg) hostLostAt ||= Date.now(); else hostLostAt = 0;
+        return;
+      }
+      if (topic !== `${T(n)}/c/${myId}`) return;
+      const m = parse(msg); if (!m) return;
+      last = Date.now(); hostLostAt = 0;
+      if (m.t === 'accept' && !accepted) { accepted = true; onAccept?.(); }
+      else if (m.t === 'data') h.data.forEach(f => f(m.d));
+      else if (m.t === 'bye') fire();
+    });
+    link.on('up', () => { if (link === mq && accepted && !closed) toHost({ t: 'hello', resume: true }); }); // "sigo aquí"
+    link.subscribe(`${T(n)}/c/${myId}`);
+  };
+  listen(mq);
+  const beat = setInterval(async () => {
+    if (!accepted || closed) return;
     toHost({ t: 'ping' });
-    if (Date.now() - last > 45000) fire(); // el anfitrión no da señales
+    const now = Date.now();
+    if (now - last > 120000 || (hostLostAt && now - hostLostAt > 60000)) { fire(); return; } // el anfitrión no vuelve
+    // si nuestro repetidor lleva rato caído, probamos a encontrar la sala por otro
+    if (!mq.up && now - last > 20000 && !switching) {
+      switching = true;
+      try {
+        const other = await findRoom();
+        if (other && !closed) { const old = mq; mq = other; listen(other); old.end(); toHost({ t: 'hello', resume: true }); }
+        else other?.end();
+      } catch {}
+      switching = false;
+    }
   }, 10000);
-  mq.on('close', fire);
   await mq.subscribe(`${T(n)}/c/${myId}`);
   return new Promise((resolve, reject) => {
     const t = setTimeout(() => { clearInterval(beat); closed = true; mq.end(); reject('sin-respuesta'); }, timeout);
@@ -225,7 +304,7 @@ export async function joinRoom(n, meta, timeout = 10000) {
       resolve({
         meta: {},
         send: d => { if (!closed) toHost({ t: 'data', d }); },
-        close: () => { if (closed) return; toHost({ t: 'bye' }); setTimeout(fire, 100); },
+        close: () => { if (closed) return; toHost({ t: 'bye' }); setTimeout(fire, 150); },
         on: (ev, fn) => h[ev].push(fn),
       });
     };

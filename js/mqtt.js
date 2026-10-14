@@ -14,7 +14,7 @@ const str = s => { const b = te.encode(s); return [b.length >> 8, b.length & 255
 const bin = b => [b.length >> 8, b.length & 255, ...b];
 const packet = (first, body) => new Uint8Array([first, ...varint(body.length), ...body]);
 
-export function mqttConnect(url, { clientId, will = null, username, password, keepalive = 20, timeout = 6000 } = {}) {
+export function mqttConnect(url, { clientId, will = null, username, password, keepalive = 60, timeout = 7000 } = {}) {
   return new Promise((resolve, reject) => {
     let ws;
     try { ws = new WebSocket(url, 'mqtt'); } catch (e) { reject(e); return; }

@@ -128,6 +128,11 @@ function onIncoming(conn) {
   clients.set(seat, { conn, queue: [] });
   conn.on('data', d => onClientData(seat, d));
   conn.on('close', () => onClientGone(seat, conn));
+  conn.on('resync', () => { // volvió tras un corte de conexión: le mandamos el estado actual
+    const c = clients.get(seat); if (!c || c.conn !== conn || !S.lobby) return;
+    conn.send({ k: 'lobby', lobby: { ...S.lobby, code: '' }, seat });
+    if (S.lobby.started && Game.G) { c.queue = []; conn.send({ k: 'game', view: viewFor(seat), events: [] }); }
+  });
   conn.send({ k: 'welcome', seat });
   broadcastLobby();
 }
@@ -250,3 +255,4 @@ export function leave() {
   S.mode = null; S.lobby = null; S.room = 0;
 }
 addEventListener('beforeunload', leave);
+addEventListener('pagehide', e => { if (!e.persisted) leave(); }); // móviles: al cerrar la pestaña
