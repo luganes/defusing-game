@@ -2,7 +2,7 @@
 // Todo el DOM. Lee G (estado o vista, siempre con TU asiento = 0) y manda tus jugadas
 // con act() de session.js, que se encarga de si eres anfitrión, invitado o juegas solo.
 
-import { WANTED_OPTS, ROSTER, CATEGORIES, SERIES_LOGO, logoOf, css, shuffle, NUM_ROOMS } from './config.js';
+import { WANTED_OPTS, ROSTER, CATEGORIES, SERIES_LOGO, logoOf, css, shuffle, seededRandom, NUM_ROOMS } from './config.js';
 import { logoEl } from './icons.js';
 import { G, setView, canAct, canNope, stagedTarget, threat, isCat, countIn, bombsLeft, nameOf } from './game.js';
 import { S, bindUI, act, startSolo, createRoom, joinAsGuest, startRoomGame, rematch, backToLobby, leave,
@@ -213,9 +213,26 @@ async function doJoin(n, code) {
 function notice(msg) { $('notice-txt').textContent = msg; $('notice').classList.remove('hidden'); }
 
 // ---------- Sala de espera ----------
+// En la sala de espera, la mesa muestra a los que ya están (cada uno en su silla, tú abajo).
+// Las sillas libres y el público salen igual para todos (azar con la semilla de la sala).
+let tableSig = '';
+function lobbyTable() {
+  const L = S.lobby; if (!L) return;
+  const rand = seededRandom(`sala${S.room}`);
+  const taken = new Set(L.seats.filter(Boolean).map(x => x.preset));
+  const fill = shuffle(ROSTER.filter(p => p.model && !taken.has(p.name)), rand);
+  const seats = [0, 1, 2, 3].map(g => L.seats[g] ? presetByName(L.seats[g].preset) : fill[g]);
+  const rot = [0, 1, 2, 3].map(i => (i + S.seat) % 4); // tu asiento real va a tu silla
+  const presets = rot.map(g => seats[g]), labels = rot.map(g => L.seats[g]?.name || null);
+  const sig = presets.map(p => p.name).join() + labels.join();
+  if (sig === tableSig) return;
+  tableSig = sig;
+  rebuildPlayers(presets, labels, `sala${S.room}|${seats.map(p => p.name).sort().join(',')}`);
+}
 function renderLobby() {
   const L = S.lobby; if (!L) return;
   if (L.started && S.mode === 'client') return; // la partida va a empezar
+  lobbyTable();
   const host = S.mode === 'host';
   $('lobby-title').textContent = L.name;
   $('lobby-sub').innerHTML = L.isPublic ? `${icon('users', 'tiny')} Pública`
@@ -497,7 +514,9 @@ function onEvent(e) {
     case 'reset': {
       UI.selected = -1; UI.selType = null; UI.target = -1; lastSig = ''; wasOver = false; $('log').innerHTML = '';
       $('gameover').classList.add('hidden'); closeModals();
-      rebuildPlayers(G.presets.map(presetByName), G.names.slice());
+      // semilla común (no depende de en qué silla te sientas): todos ven el mismo público
+      rebuildPlayers(G.presets.map(presetByName), G.names.slice(), `${G.round}|${[...G.presets].sort().join(',')}`);
+      tableSig = '';
       resetAvatars(); show('hud'); startMusic('mesa'); sfx('shuffle');
       break;
     }

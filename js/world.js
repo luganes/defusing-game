@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
-import { SEATS, seatAngle, CARD_W, CARD_H, MY_SEAT, ROSTER, css, shuffle, logoOf, HEAVY_MODELS } from './config.js';
+import { SEATS, seatAngle, CARD_W, CARD_H, MY_SEAT, ROSTER, css, shuffle, seededRandom, logoOf, HEAVY_MODELS } from './config.js';
 import { loadLogo } from './icons.js';
 import { rigFor, resetPose, play, updateAnims, preloadAll, danceDeal } from './anims.js';
 import { BACK, frontTex } from './art.js';
@@ -314,7 +314,7 @@ function buildAvatar(preset, labelText) {  const grp = new THREE.Group();
   return grp;
 }
 
-function rebuildPlayers(presets, labels = [null, null, null, null]) {
+function rebuildPlayers(presets, labels = [null, null, null, null], seed = null) {
   tablePresets = presets;
   tableClaims.clear();
   // Los GLB están en caché y comparten materiales: si alguien murió (gris) hay que devolverle
@@ -332,7 +332,7 @@ function rebuildPlayers(presets, labels = [null, null, null, null]) {
     if (i === 0 && camMode === 'head') grp.visible = false; // en 1ª persona no ves tu cuerpo
     scene.add(grp); avatars.push(grp);
   }
-  rebuildBackground(presets);
+  rebuildBackground(presets, seed);
 }
 
 // Figurantes de las mesas de fondo: SIEMPRE modelos distintos a los 4 de la mesa
@@ -350,11 +350,11 @@ function crowdLoad(preset) {
   });
 }
 const STOOL_AHEAD = 1.75 * 0.18; // el figurante está al 118% del radio del taburete (ver maps/casino.js)
-function rebuildBackground(tablePresets) {
+function rebuildBackground(tablePresets, seed = null) { // con semilla: el mismo público para todos
   bgGroups.forEach(g => scene.remove(g));
   bgGroups.length = 0;
   const light = p => !HEAVY_MODELS.includes(p.model.split('/')[1]);
-  const pool = shuffle(ROSTER.filter(p => !tablePresets.includes(p) && p.model && light(p))); // público distinto cada partida
+  const pool = shuffle(ROSTER.filter(p => !tablePresets.includes(p) && p.model && light(p)), seed ? seededRandom(seed) : Math.random);
   if (!pool.length) return;
   const used = new Set();
   getSideSpots().forEach((s, i) => {
